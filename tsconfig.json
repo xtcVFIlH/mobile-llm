@@ -13,7 +13,9 @@
       "@/*": ["src/*"],
       "stores/*": ["src/stores/*"],
       "pages/*": ["src/pages/*"],
-      "components/*": ["src/components/*"]
+      "components/*": ["src/components/*"],
+      "interfaces/*": ["src/interfaces/*"],
+      "dtos/*": ["src/dtos/*"]
     },
 
     "strict": true,

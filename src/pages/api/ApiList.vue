@@ -37,10 +37,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, inject } from 'vue';
 import { showToast } from 'vant';
-import { useApiConfigsStore } from 'stores/apiConfig/useApiConfigsStore';
-import ApiConfigAddDialog from './ApiConfigAddDialog.vue';
+import { useApisStore } from 'stores/api/useApisStore';
+import ApiConfigAddDialog from './ApiAddDialog.vue';
+
+import { LLMModelProviderServiceKey } from '@/interfaces/provider/service/LLMModelProviderServiceInterface';
+
+const LLMModelProviderService = inject(LLMModelProviderServiceKey)!;
 
 const apiConfigsStore = useApiConfigsStore();
 
