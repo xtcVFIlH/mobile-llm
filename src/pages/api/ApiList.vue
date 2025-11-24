@@ -1,19 +1,19 @@
 <template>
 
-<div class="api-config-list-page">
+<div class="api-list-page">
 
-    <div v-if="isEmpty" class="api-config-list-empty-wrapper">
+    <div v-if="isEmpty" class="api-list-empty-wrapper">
         <van-loading v-if="isLoading" size="24px" vertical />
-        <van-empty v-else description="暂无API配置" />
+        <van-empty v-else description="No API found" />
     </div>
 
-    <div v-else class="api-config-list">
+    <div v-else class="api-list">
         <van-cell-group>
             <van-cell
-                v-for="config in apiConfigsStore.apiConfigs"
-                :key="config.id"
-                :title="config.name"
-                :label="`API Key: ${formatApiKey(config.apiKey)}`"
+                v-for="api in apisStore.apis"
+                :key="api.id"
+                :title="api.name + ' (' + api.providerId + ')'"
+                :label="`API Key: ${formatApiKey(api.apiKey)}`"
             />
         </van-cell-group>
     </div>
@@ -24,11 +24,11 @@
             type="primary"
             @click="onAddButtonClick"
         >
-            添加API配置
+            Add API
         </van-button>
     </div>
 
-    <ApiConfigAddDialog
+    <ApiAddDialog
         v-model:modelValue="addDialogShow"
     />
 
@@ -37,15 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { showToast } from 'vant';
-import { useApiConfigsStore } from 'stores/apiConfig/useApiConfigsStore';
-import ApiConfigAddDialog from './ApiConfigAddDialog.vue';
+import { useApisStore } from '@/stores/api/useApisStore';
+import ApiAddDialog from './ApiAddDialog.vue';
 
-const apiConfigsStore = useApiConfigsStore();
+const apisStore = useApisStore();
 
 const isEmpty = computed(() =>
-    !isLoading.value && apiConfigsStore.apiConfigs.length === 0
+    !isLoading.value && apisStore.apis.length === 0
 );
 const isLoading = ref(false);
 
@@ -68,11 +68,11 @@ function formatApiKey(key: string | undefined): string
     return `${key.slice(0, 4)}****${key.slice(-4)}`;
 }
 
-async function loadApiConfigs(): Promise<void>
+async function loadApis(): Promise<void>
 {
     isLoading.value = true;
     try {
-        apiConfigsStore.loadAllApiConfigs()
+        apisStore.loadApis();
     }
     catch (error) {
         const errorMsg = error instanceof Error ? error.message : '加载失败';
@@ -85,13 +85,13 @@ async function loadApiConfigs(): Promise<void>
 
 onMounted(async () =>
 {
-    await loadApiConfigs();
+    await loadApis();
 });
 </script>
 
 <style scoped lang="scss">
 
-.api-config-list-page 
+.api-list-page 
 {
     width: 100%;
     height: 100%;
@@ -100,13 +100,13 @@ onMounted(async () =>
     align-items: stretch;
 }
 
-.api-config-list
+.api-list
 {
     flex: 1 1 auto;
     overflow-y: auto;
 }
 
-.api-config-list-empty-wrapper
+.api-list-empty-wrapper
 {
     flex: 1 1 auto;
     display: flex;
